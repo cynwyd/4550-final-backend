@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 
+require('dotenv').config();
+
 const app = express();
 
 app.use(cors());
@@ -15,7 +17,7 @@ const db = require("./app/models");
 const Role = db.role;
 
 db.mongoose
-  .connect(PROCESS.ENV.DB_STRING, {
+  .connect(process.env.DB_STRING, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -36,6 +38,8 @@ app.get("/", (req, res) => {
 // routes
 require("./app/routes/auth.routes")(app);
 require("./app/routes/user.routes")(app);
+require("./app/routes/review.routes")(app);
+require("./app/routes/movie.routes")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
