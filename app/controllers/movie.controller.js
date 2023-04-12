@@ -17,6 +17,20 @@ exports.getMovieByTitle = (req, res) => {
   })
 }
 
+exports.getMovieByID= (req, res) => {
+  if(!req.query.q) {
+    res.status(500).send({message: "Missing ID"});
+    return;
+  }
+
+  axios.get(`https://www.omdbapi.com/?i=${req.query.q}&apikey=${process.env.APIKEY}`).then((response) => {
+    res.send(response.data);
+  }).catch((err) => {
+    res.status(500).send({message: err});
+    console.log(err);
+  })
+}
+
 exports.searchMoviesByTitle = (req, res) => {
   if(!req.query.q) {
     res.status(500).send({message: "Missing title"});

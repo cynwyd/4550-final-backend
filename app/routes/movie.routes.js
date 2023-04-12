@@ -11,5 +11,7 @@ module.exports = function(app) {
 
   app.get("/api/movie/get/t", controller.getMovieByTitle);
 
+  app.get("/api/movie/get/id", controller.getMovieByID);
+
   app.get("/api/movie/search/s", controller.searchMoviesByTitle);
 };
