@@ -5,14 +5,13 @@ const User = db.user;
 
 exports.newReview = (req, res) => {
   console.log("Got request");
-  if(!req.body.title || !req.body.imdbID || !req.body.image || !req.body.reviewText || !req.body.rating) {
+  if(!req.body.title || !req.body.imdbID || !req.body.reviewText || !req.body.rating || !req.body.userID) {
     res.status(500).send({message: "Missing fields"});
     return;
   }
   const newReview = new Review({
     title: req.body.title,
     imdbID: req.body.imdbID,
-    image: req.body.image,
     reviewText: req.body.reviewText,
     rating: req.body.rating,
     likes: []
