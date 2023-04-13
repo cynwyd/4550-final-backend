@@ -50,3 +50,25 @@ exports.getReview = (req, res) => {
     console.log(err);
   });;
 }
+
+exports.getRecentReviews = (req, res) => {
+  Review.find({}).sort({'createdAt': -1}).limit(10).then((reviews) => {
+    res.send({ reviews: reviews });
+  }).catch((err) => {
+    res.status(500).send({message: err});
+    console.log(err);
+  });;
+}
+
+exports.getReviewsByMovieID = (req, res) => {
+  if(!req.params.id) {
+    res.status(500).send({message: "Missing ID of Movie to get Reviews for."});
+    return;
+  }
+  Review.find({imdbID: req.params.id}).then((reviews) => {
+    res.send({reviews: reviews});
+  }).catch((err) => {
+    res.status(500).send({message: err});
+    console.log(err);
+  })
+}

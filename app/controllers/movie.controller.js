@@ -22,7 +22,6 @@ exports.getMovieByID= (req, res) => {
     res.status(500).send({message: "Missing ID"});
     return;
   }
-
   axios.get(`https://www.omdbapi.com/?i=${req.query.q}&apikey=${process.env.APIKEY}`).then((response) => {
     res.send(response.data);
   }).catch((err) => {
