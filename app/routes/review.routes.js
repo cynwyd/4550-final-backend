@@ -12,9 +12,11 @@ module.exports = function(app) {
 
   app.get("/api/review/recent", controller.getRecentReviews);
 
-  app.get("/api/review/movie/:id", controller.getReviewsByMovieID)
+  app.get("/api/review/movie/:id", controller.getReviewsByMovieID);
 
   app.get("/api/review/:id", controller.getReview);
+
+  app.put("/api/review/:id/like", controller.likeReview);
 
   app.post("/api/review/new", controller.newReview);
 };
