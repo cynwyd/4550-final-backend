@@ -21,8 +21,6 @@ exports.moderatorBoard = (req, res) => {
 
 exports.updateUser = (req, res) => {
   if (req.userId != req.params.id) {
-    console.log(req.userID);
-    console.log(req.params.id);
     res.status(500).send({ message: "Unauthorized" });
     return;
   }
@@ -79,11 +77,9 @@ exports.getUser = (req, res) => {
 
       User.find({ _id: { $in: follower_ids } }, { username: 1 })
         .then((followers) => {
-          console.log(followers);
           publicUserInfo.followers = followers;
           User.find({ _id: { $in: following_ids } }, { username: 1 })
             .then((following) => {
-              console.log(following);
               publicUserInfo.following = following;
               res.send({ userInfo: publicUserInfo });
               return;
@@ -121,42 +117,44 @@ exports.followUser = (req, res) => {
       } else {
         user.followers.push(userID);
       }
-      user
-        .save()
-        .then((user) => {
-          User.findOne({_id: userID}).then((currentUser) => {
-            if (currentUser.following.includes(req.params.id)) {
-              currentUser.following = currentUser.following.filter((followingID) => followingID != req.params.id);
-            } else {
-              currentUser.following.push(req.params.id);
-            }
-            currentUser.save().then((currentUserSaved) => {
-              const publicUserInfo = {
-                id: user._id,
-                username: user.username,
-              };
-              var follower_ids = user.followers.map(function (id) {
-                return new ObjectId(id);
-              });
-              var following_ids = user.following.map(function (id) {
-                return new ObjectId(id);
-              });
-    
-              User.find({ _id: { $in: follower_ids } }, { username: 1 })
-                .then((followers) => {
-                  console.log(followers);
-                  publicUserInfo.followers = followers;
-                  User.find({ _id: { $in: following_ids } }, { username: 1 })
-                    .then((following) => {
-                      console.log(following);
-                      publicUserInfo.following = following;
-                      res.send({ userInfo: publicUserInfo });
-                      return;
-                    })
-                })
+      user.save().then((user) => {
+        User.findOne({ _id: userID }).then((currentUser) => {
+          if (currentUser.following.includes(req.params.id)) {
+            currentUser.following = currentUser.following.filter(
+              (followingID) => followingID != req.params.id
+            );
+          } else {
+            currentUser.following.push(req.params.id);
+          }
+          currentUser.save().then((currentUserSaved) => {
+            const publicUserInfo = {
+              id: user._id,
+              username: user.username,
+            };
+            var follower_ids = user.followers.map(function (id) {
+              return new ObjectId(id);
             });
+            var following_ids = user.following.map(function (id) {
+              return new ObjectId(id);
+            });
+
+            User.find({ _id: { $in: follower_ids } }, { username: 1 }).then(
+              (followers) => {
+                
+                publicUserInfo.followers = followers;
+                User.find(
+                  { _id: { $in: following_ids } },
+                  { username: 1 }
+                ).then((following) => {
+                  publicUserInfo.following = following;
+                  res.send({ userInfo: publicUserInfo });
+                  return;
+                });
+              }
+            );
           });
-        })
+        });
+      });
     })
     .catch((err) => {
       res.status(500).send({ message: err });
