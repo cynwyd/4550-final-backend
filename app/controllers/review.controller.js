@@ -1,4 +1,5 @@
 const config = require("../../config/auth.config");
+const { review } = require("../models");
 const db = require("../models");
 const Review = db.review;
 const User = db.user;
@@ -55,6 +56,7 @@ exports.getReview = (req, res) => {
     return;
   }
   Review.findOne({ _id: req.params.id })
+    .populate('owner', 'username')
     .then((review) => {
       res.send({ review: review });
     })
@@ -66,6 +68,7 @@ exports.getReview = (req, res) => {
 
 exports.getRecentReviews = (req, res) => {
   Review.find({})
+    .populate('owner', 'username')
     .sort({ createdAt: -1 })
     .limit(10)
     .then((reviews) => {
@@ -94,6 +97,23 @@ exports.getReviewsByMovieID = (req, res) => {
     });
 };
 
+exports.getReviewsByUserID = (req, res) => {
+  if (!req.params.id) {
+    res
+      .status(500)
+      .send({ message: "Missing ID of User to get Reviews for." });
+    return;
+  }
+  Review.find({ owner: req.params.id })
+    .then((reviews) => {
+      res.send({ reviews: reviews });
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err });
+      console.log(err);
+    });
+};
+
 exports.likeReview = (req, res) => {
   const userID = req.body.userID;
   if (!userID || !req.params.id) {
@@ -108,7 +128,7 @@ exports.likeReview = (req, res) => {
       } else {
         review.likes.push(userID);
       }
-      
+
       review
         .save()
         .then((review) => {
