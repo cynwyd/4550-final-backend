@@ -122,6 +122,7 @@ exports.likeReview = (req, res) => {
   }
 
   Review.findOne({ _id: req.params.id })
+  .populate('owner', 'username')
     .then((review) => {
       if (review.likes.includes(userID)) {
         review.likes = review.likes.filter((user) => user != userID);
