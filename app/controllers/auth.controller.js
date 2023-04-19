@@ -12,6 +12,7 @@ exports.signup = (req, res) => {
     username: req.body.username,
     email: req.body.email,
     password: req.body.password,
+    reviewer: req.body.reviewer,
     followers: [],
     following: []
   });
@@ -86,6 +87,7 @@ exports.signin = (req, res) => {
         username: user.username,
         email: user.email,
         phone: user.phone,
+        reviewer: user.reviewer,
         roles: authorities,
         accessToken: token
       });

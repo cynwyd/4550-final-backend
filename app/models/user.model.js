@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema({
   email: String,
   phone: String,
   password: String,
+  reviewer: Boolean,
   roles: [
     {
       type: mongoose.Schema.Types.ObjectId,
