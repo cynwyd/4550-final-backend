@@ -145,3 +145,17 @@ exports.likeReview = (req, res) => {
       console.log(err);
     });
 };
+
+exports.getReviewsForUser = (req, res) => {
+  const userID = req.params.id;
+  User.findOne({_id: userID}).then((user) => {
+    const followingIDs = user.following;
+    Review.find({owner: {$in: followingIDs}})
+    .populate('owner', 'username')
+    .sort({ createdAt: -1 })
+    .limit(10)
+    .then((reviews) => {
+      res.send({ reviews: reviews });
+    })
+  })
+};

@@ -12,6 +12,8 @@ module.exports = function(app) {
 
   app.get("/api/review/recent", controller.getRecentReviews);
 
+  app.get("/api/review/recent/:id", controller.getReviewsForUser);
+
   app.get("/api/review/movie/:id", controller.getReviewsByMovieID);
 
   app.get("/api/review/user/:id", controller.getReviewsByUserID);
