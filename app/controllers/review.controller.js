@@ -155,7 +155,18 @@ exports.getReviewsForUser = (req, res) => {
     .sort({ createdAt: -1 })
     .limit(10)
     .then((reviews) => {
-      res.send({ reviews: reviews });
+      const reviewIDs = reviews.map((review) => {return review._id});
+      Review.find({_id: {$nin: reviewIDs}})
+        .populate('owner', 'username')
+        .sort({ createdAt: -1 })
+        .limit(10)
+        .then((restOfReviews) => {
+          res.send({ reviews: reviews.concat(restOfReviews) });
+        })
+        .catch((err) => {
+          res.status(500).send({ message: err });
+          console.log(err);
+        });
     })
   })
 };
